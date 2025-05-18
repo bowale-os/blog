@@ -11,6 +11,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # Import your forms from the forms.py
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
@@ -27,7 +30,7 @@ def admin_only(func):
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
@@ -41,7 +44,7 @@ def inject_logged_in():
 class Base(DeclarativeBase):
     pass
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -256,8 +259,8 @@ def about():
 
 message_dict = {}
 #monitor and respond to enquiries
-email_recipient = "danny2show@gmail.com"
-APP_PASSWORD = "dbcm lxtg twjs wpoq"
+email_recipient = os.getenv("email_recipient")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
